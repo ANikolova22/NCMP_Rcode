@@ -3,6 +3,8 @@
 # current cleaning removes -ves, but perhaps can keep values < 0.005th percentile because they are guaranteed to be < -2SD (?)
 # use tidyR and dplyr for efficiency?
 
+
+# reading the data. This is from 2018-19 download of the zipped file from NHS Digital, after extracting
 NCMP_data<-read.csv("D:\\SDG general\\DAO stuff\\National Child Measurement Programme - England 2018-19 CSV File and Guidance\\ncmp_1819_final_non_disclosive_published.csv")
 # some checks
 head(NCMP_data)
