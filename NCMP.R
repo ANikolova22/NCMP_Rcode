@@ -1,6 +1,6 @@
 #Code based on R v4.0.2
 # basic tests, may need more cleaning up of suppressed values (large negatives)
-# current cleaning removes -ves, but perhapsa can keep values < 0.005th percentile because they are guaranteed to be < -2SD (?)
+# current cleaning removes -ves, but perhaps can keep values < 0.005th percentile because they are guaranteed to be < -2SD (?)
 # use tidyR and dplyr for efficiency?
 
 NCMP_data<-read.csv("D:\\SDG general\\DAO stuff\\National Child Measurement Programme - England 2018-19 CSV File and Guidance\\ncmp_1819_final_non_disclosive_published.csv")
