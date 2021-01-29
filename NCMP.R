@@ -35,7 +35,7 @@ nrow(clean_NCMP[clean_NCMP$AgeInMonths==60 & clean_NCMP$GenderCode==2 & clean_NC
 
 
 
-#####
+########
 #some test stuff (not relevant)
 #med_score<-median(NCMP_data[NCMP_data$AgeInMonths==60, 4])
 #mad_score<-mad(NCMP_data[NCMP_data$AgeInMonths==60, 4],na.rm=T)
