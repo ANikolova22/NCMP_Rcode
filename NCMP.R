@@ -11,7 +11,7 @@ head(NCMP_data)
 min(NCMP_data$AgeInMonths)/12
 max(NCMP_data$AgeInMonths)/12
 
-# clean up suppressions from dataset (may need to be more sophisticated)
+# clean up suppressions from dataset (may need to be more sophisticated, here just removing all negatives)
 clean_NCMP <- NCMP_data[NCMP_data$Height > 0, ]
 nrow(clean_NCMP)-nrow(NCMP_data) # N supressed height instances
 
