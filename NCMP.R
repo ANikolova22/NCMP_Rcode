@@ -13,7 +13,7 @@ min(NCMP_data$AgeInMonths)/12
 max(NCMP_data$AgeInMonths)/12
 
 # rounding the age in months variable (to match WHO tables better)
-NCMP_data$AgeInMonths<-round(NCMP_data$AgeInMonths)
+NCMP_data$AgeInMonths<-round(NCMP_data$AgeInMonths) # how do we round months??
 
 # clean up suppressions from dataset (may need to be more sophisticated, here just removing all negatives)
 # this will not be necessary when working with full data set
