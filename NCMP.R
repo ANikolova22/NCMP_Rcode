@@ -13,15 +13,18 @@ min(NCMP_data$AgeInMonths)/12
 max(NCMP_data$AgeInMonths)/12
 
 # rounding the age in months variable (to match WHO tables better)
-NCMP_data$AgeInMonths<-round(NCMP_data$AgeInMonths) # how do we round months??
+# NCMP_data$AgeInMonths<-round(NCMP_data$AgeInMonths) # how do we round months, this does standard rounding, but maybe not appropriate??
+NCMP_data$AgeInMonths<-trunc(NCMP_data$AgeInMonths) #this truncates to the integer value, so similar to age in years rounding
 
 # clean up suppressions from dataset (may need to be more sophisticated, here just removing all negatives)
 # this will not be necessary when working with full data set
 clean_NCMP <- NCMP_data[NCMP_data$Height > 0, ]
 nrow(clean_NCMP)-nrow(NCMP_data) # N supressed height instances altogether
 
-# retaining only age groups of interest (under 5s)
-clean_NCMP <- clean_NCMP[clean_NCMP$AgeInMonths<=60, ] 
+# retaining only age groups of interest (under 5s, exclusing 5)
+clean_NCMP <- clean_NCMP[clean_NCMP$AgeInMonths<60, ] 
+# extract the unique ages in months (12 months in total, as we only have age 4)
+ages<- sort(unique(clean_NCMP$AgeInMonths))
 
 # loading the WHO standards (should be in the current working directory)
 who_girls <- read.csv("./height-for-age-(z-scores)-f.csv", header = T)
@@ -36,21 +39,71 @@ NCMP_girls$WHO_SD <- who_girls$min2.SD[match(NCMP_girls$AgeInMonths,who_girls$Mo
 NCMP_boys$WHO_SD <- who_boys$min2.SD[match(NCMP_boys$AgeInMonths,who_boys$Months)] 
 
 
-# test calculation of stunting prevalence for girls at 60 months:
+#### test calculation of stunting prevalence for girls at 59 months:
 
-age_60_f<-nrow(NCMP_girls[NCMP_girls$AgeInMonths==60, ])
-deviations_60_f<-nrow(NCMP_girls[NCMP_girls$AgeInMonths==60 & NCMP_girls$Height < NCMP_girls$WHO_SD, ])
-prevalence_60_f<-(deviations_60_f/age_60_f)*100 # % girls at age 5 under 2 SD from WHO median
+age_59_f<-nrow(NCMP_girls[NCMP_girls$AgeInMonths==59, ])
+deviations_59_f<-nrow(NCMP_girls[NCMP_girls$AgeInMonths==59 & NCMP_girls$Height < NCMP_girls$WHO_SD, ])
+prevalence_59_f<-(deviations_59_f/age_59_f)*100 # % girls at age 59 months under 2 SD from WHO median
 
 # for comparison with pre-calculated SD from NCMP suppressed data (British standards)
 # prevalence based on pre-calculated SD (a bit larger)
-((nrow(NCMP_girls[NCMP_girls$AgeInMonths==60 & NCMP_girls$HeightZScore< -2, ]))/age_60_f)*100
+((nrow(NCMP_girls[NCMP_girls$AgeInMonths==59 & NCMP_girls$HeightZScore< -2, ]))/age_59_f)*100
 
 
 # for boys
-deviations_60_m<-nrow(NCMP_boys[NCMP_boys$AgeInMonths==60 & NCMP_boys$Height < NCMP_boys$WHO_SD, ])
-prevalence_60_m<-(deviations_60_m/nrow(NCMP_boys[NCMP_boys$AgeInMonths==60, ]))*100
-prevalence_60_m # % boys at age 5 under 2 SD from WHO median
+deviations_59_m<-nrow(NCMP_boys[NCMP_boys$AgeInMonths==59 & NCMP_boys$Height < NCMP_boys$WHO_SD, ])
+prevalence_59_m<-(deviations_59_m/nrow(NCMP_boys[NCMP_boys$AgeInMonths==59, ]))*100
+prevalence_59_m # % boys at age 59 months under 2 SD from WHO median
+##
+
+
+
+# integrating the above test run, but in a loop for girls, using the ages variable:
+# initiating an empty variables to hold the results
+deviations_girls <- NULL
+prevalence_girls <- NULL
+instances_girls <- NULL
+#main loop
+for(i in ages){
+  total_age_temp<-nrow(NCMP_girls[NCMP_girls$AgeInMonths==i, ])
+  deviations_temp<-nrow(NCMP_girls[NCMP_girls$AgeInMonths==i & NCMP_girls$Height < NCMP_girls$WHO_SD, ])
+  prevalence_temp<-(deviations_temp/total_age_temp)*100 
+  deviations_girls<-c(deviations_girls,deviations_temp)
+  prevalence_girls<-c(prevalence_girls,prevalence_temp)
+  instances_girls<-c(instances_girls,total_age_temp)
+}
+
+#formtting final table for girls with detailed results for age
+girls_table<-rbind(instances_girls,deviations_girls,prevalence_girls)
+colnames(girls_table)<-ages
+girls_table # Is it normal that there are incrementally more observations as age increases??
+
+# global prevalence for under 5s girls (i.e. for 4 year olds)
+prevalence_under5_girls <- (sum(girls_table["deviations_girls", ])/sum(girls_table["instances_girls", ]))*100
+prevalence_under5_girls
+
+# same procedure, but for boys
+deviations_boys <- NULL
+prevalence_boys <- NULL
+instances_boys <- NULL
+#main loop
+for(i in ages){
+  total_age_temp<-nrow(NCMP_boys[NCMP_boys$AgeInMonths==i, ])
+  deviations_temp<-nrow(NCMP_boys[NCMP_boys$AgeInMonths==i & NCMP_boys$Height < NCMP_boys$WHO_SD, ])
+  prevalence_temp<-(deviations_temp/total_age_temp)*100 
+  deviations_boys<-c(deviations_boys,deviations_temp)
+  prevalence_boys<-c(prevalence_boys,prevalence_temp)
+  instances_boys<-c(instances_boys,total_age_temp)
+}
+
+#formtting final table for girls with detailed results for age
+boys_table<-rbind(instances_boys,deviations_boys,prevalence_boys)
+colnames(boys_table)<-ages
+boys_table #same pattern, with numbers of observations (instances) increasing with age...
+
+# global prevalence for under 5s girls (i.e. for 4 year olds)
+prevalence_under5_boys <- (sum(boys_table["deviations_boys", ])/sum(boys_table["instances_boys", ]))*100
+prevalence_under5_boys
 
 
 
