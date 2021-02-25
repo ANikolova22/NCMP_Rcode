@@ -6,8 +6,7 @@
 # The function needs to be run on each year of data independently (separate csv files per year)
 # The data should contain the following variables (columns): 
 # AgeinMonths; Height; GenderCode; .......
-# Outputs are two summary tables in .csv format, one detailed per month of age (Summary_stunting_AgeSex_year.csv), 
-#                                                and one across age (<5) and sex (Summary_stunting_all_year.csv)
+# Output is a summary table in .csv format for age (<5) and sex (Summary_stunting_all_year.csv)
 #
 ###############################################################################################
 #
