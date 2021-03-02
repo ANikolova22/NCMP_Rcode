@@ -42,8 +42,9 @@ test_NCMP<-na.omit(test_NCMP) #lots of NAs for the non-used function arguments, 
 cols_to_keep<- c("HA_2_r", "WH2_r", "WH_2_r") 
 final_result<-test_NCMP[, cols_to_keep] # keeping only the useful columns
 #renaming the columns to more meaningful things
-colnames(final_result_prevalence)<-c("HeightAge_-2SD", "WeightHeight__2SD", "WeightHeight_-SD")
-write.csv(final_result_prevalence, "../Target_2.2.csv")
+colnames(final_result)<-c("HeightAge_-2SD", "WeightHeight_+2SD", "WeightHeight_-2SD")
+write.csv(final_result, "../Target_2.2.csv")
+
 
 
 # Things to look into for further disaggregations:
