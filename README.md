@@ -16,4 +16,4 @@ The output from the test code is one .csv file, containing sample size, prevalen
 
 The output from the main code is one .csv file, containing sample size, prevalence Height for Age -2SD (stunting), prevalence	Weight for Height +2SD, and prevalence	Weight for Height -2SD. This is broken down by the total sample, by sex, by IMD quintile (1 = most deprived LSOA), 17 ethnicity groups, and urban/rural residence.
 
-
+The script nneds to be run separately for each year of data.
