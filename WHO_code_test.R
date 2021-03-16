@@ -39,13 +39,13 @@ nrow(clean_NCMP)-nrow(NCMP_data) #quite a lot! But this is just for testing purp
 clean_NCMP$schoolindexofmultipledepriv <- ifelse(clean_NCMP$schoolindexofmultipledepriv==1, 1, 
                                                  ifelse(clean_NCMP$schoolindexofmultipledepriv==2, 1, 
                                                  ifelse(clean_NCMP$schoolindexofmultipledepriv==3, 2,
-                                                 ifelse(clean_NCMP$schoolindexofmultipledepri==4, 2,
+                                                 ifelse(clean_NCMP$schoolindexofmultipledepriv==4, 2,
                                                  ifelse(clean_NCMP$schoolindexofmultipledepriv==5, 3,
-                                                 ifelse(clean_NCMP$schoolindexofmultipledepri==6, 3,
+                                                 ifelse(clean_NCMP$schoolindexofmultipledepriv==6, 3,
                                                  ifelse(clean_NCMP$schoolindexofmultipledepriv==7, 4,
-                                                 ifelse(clean_NCMP$schoolindexofmultipledepri==8, 4,
+                                                 ifelse(clean_NCMP$schoolindexofmultipledepriv==8, 4,
                                                  ifelse(clean_NCMP$schoolindexofmultipledepriv==9, 5, 
-                                                 ifelse(clean_NCMP$schoolindexofmultipledepri==10, 5, NA))))))))))
+                                                 ifelse(clean_NCMP$schoolindexofmultipledepriv==10, 5, NA))))))))))
 
 unique(clean_NCMP$schoolindexofmultipledepriv) # re-checking the range is as expected (1:5)
 
@@ -54,7 +54,7 @@ unique(clean_NCMP$schoolindexofmultipledepriv) # re-checking the range is as exp
 #main function, takes around 26 mins to run:
 
 #the wealthq argument is fed the regrouped IMD variable and assumes 1 = most deprived, 5 = least deprived
-#typeres argument expects urgan/rural breakdown variable, 
+#typeres argument expects urban/rural breakdown variable, 
 # which is not available in the test data but is reported to be available in the raw data as "PupilUrbanRuralIndicator"
 # schoolgovernmentofficeregion variable is used here as a test for othergr argument (which may take ethnicity from the raw data)
 test_NCMP<-anthro_prevalence(sex = clean_NCMP$GenderCode, 
@@ -74,26 +74,29 @@ test_NCMP<-test_NCMP[,-1] #removing the duplicate column
 test_NCMP<-na.omit(test_NCMP) 
 
 #renaming the default deprivation variable to match dataset:
-rownames(test_NCMP)[7:11] <- c("School IMD Q1: most deprived","School IMD Q2","School IMD Q3",
-                               "School IMD Q4","School IMD Q5: least deprived")
-
+first_Q <- which(rownames(test_NCMP)=="Wealth quintile: Q1: Poorest")
+rownames(test_NCMP)[first_Q:(first_Q + 4)] <- c("School IMD Q1: most deprived", 
+                                                "School IMD Q2",
+                                                "School IMD Q3","School IMD Q4",
+                                                "School IMD Q5: least deprived")
 
 
 #these are the columns of interest from the function output (based on the function documentation)
 cols_to_keep<- c("HAZ_pop","HA_2_r", "WH2_r", "WH_2_r") 
 final_result<-test_NCMP[, cols_to_keep] # keeping only the useful columns
 #removing obsolete rows (we only have 1 age group, so deleting repetitions)
-final_result <- final_result[-c(1,3,4), ]
+final_result <- final_result[!(row.names(final_result) %in% c("All", "Sex: Female","Sex: Male")), ]
 #renaming the columns to more meaningful things
-colnames(final_result)<-c("Sample size","HeightAge_-2SD", "WeightHeight_+2SD", "WeightHeight_-2SD")
+colnames(final_result)<-c("SampleSize","HeightforAge_-2SD", "WeightforHeight_+2SD", "WeightforHeight_-2SD")
 
 #final result output. IMD is not available as an interaction with other variables
 # sample sizes are very small, but this should not be the case for the unsuppressed data
-write.csv(final_result, "../Target_2.2.csv")
+file_year <- 201819 # CHANGE to the year this data refers to
+write.csv(final_result, paste("../Target_2.2_", file_year, ".csv", sep=""))
 
 
 
 # Things to look into for further disaggregations:
 # 
-# also [PupilRegionCode_ONS] may have too many values, so maybe should give up on usaing the gregion argument?
+# [PupilRegionCode_ONS] may have too many values, so maybe should give up on usaing the gregion argument?
 
