@@ -3,6 +3,8 @@
 # The user must set the working directory to match the directory of this R script
 # setwd() # uncomment this line to set the directory of the downloded script,, + csv files, keeping the folder with the data one directory above
 #
+#
+#NB: The WHO function needs to be run on each year of data separately - so 1 csv file per year
 ###############################################################################################
 
 # install the package and load it in your R session:
@@ -49,25 +51,33 @@ unique(clean_NCMP$schoolindexofmultipledepriv) # re-checking the range is as exp
 
 
 
-#main function, takes around 22 mins to run
+#main function, takes around 26 mins to run:
+
+#the wealthq argument is fed the regrouped IMD variable and assumes 1 = most deprived, 5 = least deprived
+#typeres argument expects urgan/rural breakdown variable, 
+# which is not available in the test data but is reported to be available in the raw data as "PupilUrbanRuralIndicator"
+# schoolgovernmentofficeregion variable is used here as a test for othergr argument (which may take ethnicity from the raw data)
 test_NCMP<-anthro_prevalence(sex = clean_NCMP$GenderCode, 
                              age = clean_NCMP$AgeInMonths, 
                              is_age_in_month = T, 
                              weight = clean_NCMP$Weight, 
                              lenhei = clean_NCMP$Height, 
                              measure = "H",
-                             wealthq = clean_NCMP$schoolindexofmultipledepriv)
+                             wealthq = clean_NCMP$schoolindexofmultipledepriv,
+                             othergr = clean_NCMP$schoolgovernmentofficeregion)
 
 #get relevant info only
 rownames(test_NCMP)<-test_NCMP$Group #assigning the first column as rownames (makes is cleaner)
 test_NCMP<-test_NCMP[,-1] #removing the duplicate column
+
+#lots of NAs for the non-used function arguments, so getting rid of those:
+test_NCMP<-na.omit(test_NCMP) 
 
 #renaming the default deprivation variable to match dataset:
 rownames(test_NCMP)[7:11] <- c("School IMD Q1: most deprived","School IMD Q2","School IMD Q3",
                                "School IMD Q4","School IMD Q5: least deprived")
 
 
-test_NCMP<-na.omit(test_NCMP) #lots of NAs for the non-used function arguments, so getting rid of those.
 
 #these are the columns of interest from the function output (based on the function documentation)
 cols_to_keep<- c("HAZ_pop","HA_2_r", "WH2_r", "WH_2_r") 
@@ -84,5 +94,6 @@ write.csv(final_result, "../Target_2.2.csv")
 
 
 # Things to look into for further disaggregations:
-# raw NCMP data has urban/rural variable [PupilUrbanRuralIndicator], so could be plugged in the function as is!
-# also [PupilRegionCode_ONS] could be fed into the gregion argument?
+# 
+# also [PupilRegionCode_ONS] may have too many values, so maybe should give up on usaing the gregion argument?
+
