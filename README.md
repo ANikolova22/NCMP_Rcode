@@ -10,10 +10,10 @@ The raw data is not accessible, so the code is developed and tested on publicly 
 
 The key steps of the scripts aim to produce headline data for indicators 2.2.1 and 2.2.2, including an additional disaggregation using the Index of multiple deprivation (IMD) variable, ethnicity and residence type (rural/urban). The IMD variable in the NCMP data is recoded from deciles into quintiles.
 
-The script can be tested on the NCMP suppressed dataset, which is publicly available (link above) - use WHO_code_test.R. This script includes cleaning up the data to remove any suppressed cells. The main file for delivery to PHE is WHO_code_toRUN.R (no suppression cleaning, assuming the raw data has no suppressions or missing values).
+The script can be tested on the NCMP suppressed dataset, which is publicly available (NHS Digital link above, download zipped file in Resources section and unzip the .csv) - use WHO_code_test.R. This script includes cleaning up the data to remove any suppressed cells. The main file for delivery to PHE is WHO_code_toRUN.R (no suppression cleaning, assuming the raw data has no suppressions or missing values).
 
-The output from the test code is one .csv file, containing sample size, prevalence Height for Age -2SD (stunting), prevalence	Weight for Height +2SD, and prevalence	Weight for Height -2SD. This is broken down by the total sample, by sex, by IMD quintile (1 = most deprived LSOA), 10 school GORs.
+The output from the test code is one .csv file, containing sample size, prevalence Height for Age -2SD (stunting), prevalence	Weight for Height +2SD, and prevalence	Weight for Height -2SD. This is broken down by the total sample, by sex, by IMD quintile (1 = most deprived LSOA), 10 school GORs. This latter disaggregation was used only for testing one of the function arguments.
 
-The output from the main code is one .csv file, containing sample size, prevalence Height for Age -2SD (stunting), prevalence	Weight for Height +2SD, and prevalence	Weight for Height -2SD. This is broken down by the total sample, by sex, by IMD quintile (1 = most deprived LSOA), 17 ethnicity groups, and urban/rural residence.
+The output from the main code is one .csv file, containing sample size, prevalence Height for Age -2SD (stunting), prevalence	Weight for Height +2SD, and prevalence	Weight for Height -2SD. This is broken down by the total sample, by sex, by IMD quintile (1 = most deprived LSOA), 17 ethnicity groups, and urban/rural residence. The latter two variables are not available in the published data used for testing.
 
-The script nneds to be run separately for each year of data.
+The script needs to be run separately for each year of data.
